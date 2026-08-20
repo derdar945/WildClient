@@ -1,3 +1,5 @@
+local getModule = (getgenv and getgenv() or _G).getModule
+
 local Menu = getModule("gui/menu")
 local HUD = getModule("hud/module")
 local Movement = getModule("movement/module")
@@ -21,6 +23,6 @@ pcall(function()
 	}
 end)
 
-print("WildClient v4")
+print("WildClient v5")
 
 return true

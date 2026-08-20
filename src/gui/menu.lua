@@ -1,5 +1,6 @@
 local TweenService = game:GetService("TweenService")
 local UIS = game:GetService("UserInputService")
+local getModule = (getgenv and getgenv() or _G).getModule
 
 local Menu = {}
 

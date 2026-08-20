@@ -1,6 +1,7 @@
 local HUD = {}
 
 local Players = game:GetService("Players")
+local getModule = (getgenv and getgenv() or _G).getModule
 
 local gui = nil
 

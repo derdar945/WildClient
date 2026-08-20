@@ -69,6 +69,6 @@ local function getModule(path)
 	return Cache[path]
 end
 
-getModule = getModule
+(getgenv and getgenv() or _G).getModule = getModule
 
 getModule("main")
