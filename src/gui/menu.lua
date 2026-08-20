@@ -1,0 +1,204 @@
+local TweenService = game:GetService("TweenService")
+local UIS = game:GetService("UserInputService")
+
+local Menu = {}
+
+local Background = Color3.fromRGB(10, 11, 17)
+local Secondary = Color3.fromRGB(15, 17, 25)
+
+function Menu:Init()
+	local gui = Instance.new("ScreenGui")
+	gui.Name = "WildClient"
+	gui.ResetOnSpawn = false
+	gui.IgnoreGuiInset = true
+	gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+	local ok = pcall(function()
+		gui.Parent = game:GetService("CoreGui")
+	end)
+	if not ok then
+		gui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+	end
+
+	local blur = Instance.new("BlurEffect")
+	blur.Size = 0
+	blur.Parent = game:GetService("Lighting")
+
+	local overlay = Instance.new("TextButton")
+	overlay.Size = UDim2.new(1, 0, 1, 0)
+	overlay.BackgroundColor3 = Color3.new(0, 0, 0)
+	overlay.BackgroundTransparency = 1
+	overlay.BorderSizePixel = 0
+	overlay.Text = ""
+	overlay.ZIndex = 1
+	overlay.Visible = false
+	overlay.Parent = gui
+
+	local width = 560
+	local height = 380
+
+	local window = Instance.new("Frame")
+	window.Name = "Window"
+	window.Size = UDim2.fromOffset(width, height)
+	window.Position = UDim2.new(0.5, 0, 0.5, 0)
+	window.AnchorPoint = Vector2.new(0.5, 0.5)
+	window.BackgroundColor3 = Background
+	window.BorderSizePixel = 0
+	window.ClipsDescendants = true
+	window.ZIndex = 2
+	window.Visible = false
+	window.Parent = gui
+
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 16)
+	corner.Parent = window
+
+	local grad = Instance.new("UIGradient")
+	grad.Color = ColorSequence.new(Background, Secondary)
+	grad.Rotation = 90
+	grad.Parent = window
+
+	local titlebar = Instance.new("Frame")
+	titlebar.Size = UDim2.new(1, 0, 0, 38)
+	titlebar.BackgroundColor3 = Color3.fromRGB(12, 13, 21)
+	titlebar.BackgroundTransparency = 1
+	titlebar.BorderSizePixel = 0
+	titlebar.Parent = window
+
+	local titleCorner = Instance.new("UICorner")
+	titleCorner.CornerRadius = UDim.new(0, 16)
+	titleCorner.Parent = titlebar
+
+	local cover = Instance.new("Frame")
+	cover.Size = UDim2.new(1, 0, 0, 19)
+	cover.Position = UDim2.new(0, 0, 0, 19)
+	cover.BackgroundColor3 = Color3.fromRGB(12, 13, 21)
+	cover.BackgroundTransparency = 1
+	cover.BorderSizePixel = 0
+	cover.ZIndex = 3
+	cover.Parent = titlebar
+
+	local viewport = Instance.new("ViewportFrame")
+	viewport.Size = UDim2.fromOffset(34, 34)
+	viewport.Position = UDim2.new(0, 12, 0.5, -17)
+	viewport.BackgroundTransparency = 1
+	viewport.ZIndex = 5
+	viewport.Ambient = Color3.new(1, 1, 1)
+	viewport.LightColor = Color3.fromRGB(0, 150, 255)
+	viewport.Parent = titlebar
+
+	local logoCam = Instance.new("Camera")
+	logoCam.Parent = viewport
+	viewport.CurrentCamera = logoCam
+
+	local logoWorld = Instance.new("WorldModel")
+	logoWorld.Parent = viewport
+
+	local function addDrop(cx, cy, radius, length)
+		local head = Instance.new("Part")
+		head.Shape = Enum.PartType.Ball
+		head.Size = Vector3.new(radius * 2, radius * 2, radius * 2)
+		head.Material = Enum.Material.Neon
+		head.Color = Color3.fromRGB(0, 150, 255)
+		head.CFrame = CFrame.new(cx, cy, 0)
+		head.Anchored = true
+		head.CanCollide = false
+		head.CanQuery = false
+		head.CanTouch = false
+		head.Parent = logoWorld
+
+		local tail = Instance.new("Part")
+		tail.Size = Vector3.new(radius * 1.7, length, radius * 1.7)
+		tail.Material = Enum.Material.Neon
+		tail.Color = Color3.fromRGB(0, 150, 255)
+		tail.Anchored = true
+		tail.CanCollide = false
+		tail.CanQuery = false
+		tail.CanTouch = false
+		local mesh = Instance.new("SpecialMesh")
+		mesh.MeshId = "rbxassetid://3270017"
+		mesh.Parent = tail
+		tail.CFrame = CFrame.new(cx, cy - radius - length / 2, 0) * CFrame.Angles(math.pi, 0, 0)
+		tail.Parent = logoWorld
+	end
+
+	addDrop(-22, 0, 5.5, 15)
+	addDrop(0, 1, 7, 21)
+	addDrop(22, 0, 5.5, 15)
+
+	logoCam.CFrame = CFrame.lookAt(Vector3.new(0, -10, 38), Vector3.new(0, -10, 0))
+
+	local dragging = false
+	local dragStart = Vector2.zero
+	local startPos = window.Position
+
+	titlebar.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = true
+			dragStart = input.Position
+			startPos = window.Position
+		end
+	end)
+
+	UIS.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = false
+		end
+	end)
+
+	UIS.InputChanged:Connect(function(input)
+		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+			local delta = input.Position - dragStart
+			window.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		end
+	end)
+
+	local function tween(object, goal, duration)
+		TweenService:Create(object, TweenInfo.new(duration or 0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), goal):Play()
+	end
+
+	local open = false
+
+	local function setOpen(value)
+		open = value
+		if open then
+			window.Visible = true
+			overlay.Visible = true
+			tween(blur, { Size = 8 }, 0.2)
+			tween(overlay, { BackgroundTransparency = 0.65 }, 0.2)
+
+			window.Position = UDim2.new(0.5, 0, 0.5, 60)
+			window.BackgroundTransparency = 1
+			titlebar.BackgroundTransparency = 1
+			cover.BackgroundTransparency = 1
+			task.delay(0.03, function()
+				tween(window, { Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 0 }, 0.35)
+				tween(titlebar, { BackgroundTransparency = 0 }, 0.35)
+				tween(cover, { BackgroundTransparency = 0 }, 0.35)
+			end)
+		else
+			overlay.Visible = false
+			tween(blur, { Size = 0 }, 0.25)
+			window.Visible = false
+		end
+	end
+
+	overlay.MouseButton1Click:Connect(function()
+		setOpen(false)
+	end)
+
+	UIS.InputBegan:Connect(function(input)
+		if input.KeyCode == Enum.KeyCode.Insert then
+			setOpen(not open)
+		end
+	end)
+
+	Menu.SetOpen = setOpen
+	Menu.Toggle = function()
+		setOpen(not open)
+	end
+	Menu.IsOpen = function()
+		return open
+	end
+end
+
+return Menu
