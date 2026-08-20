@@ -4,8 +4,6 @@ local UIS = game:GetService("UserInputService")
 local Background = Color3.fromRGB(10, 11, 17)
 local Secondary = Color3.fromRGB(15, 17, 25)
 
-local LOGO_ID = "ВСТАВЬ_ID_ЛОГОТИПА"
-
 local gui = Instance.new("ScreenGui")
 gui.Name = "WildClient"
 gui.ResetOnSpawn = false
@@ -76,14 +74,56 @@ cover.BorderSizePixel = 0
 cover.ZIndex = 3
 cover.Parent = titlebar
 
-local logo = Instance.new("ImageLabel")
-logo.Size = UDim2.fromOffset(26, 26)
-logo.Position = UDim2.new(0, 12, 0.5, -13)
-logo.BackgroundTransparency = 1
-logo.Image = "rbxassetid://" .. LOGO_ID
-logo.ScaleType = Enum.ScaleType.Fit
-logo.ZIndex = 5
-logo.Parent = titlebar
+local viewport = Instance.new("ViewportFrame")
+viewport.Size = UDim2.fromOffset(34, 34)
+viewport.Position = UDim2.new(0, 12, 0.5, -17)
+viewport.BackgroundTransparency = 1
+viewport.ZIndex = 5
+viewport.FieldOfView = 75
+viewport.Ambient = Color3.new(1, 1, 1)
+viewport.LightColor = Color3.fromRGB(0, 150, 255)
+viewport.Parent = titlebar
+
+local logoCam = Instance.new("Camera")
+logoCam.Parent = viewport
+viewport.CurrentCamera = logoCam
+
+local logoWorld = Instance.new("WorldModel")
+logoWorld.Parent = viewport
+
+local function addDrop(cx, cy, radius, length)
+	local head = Instance.new("Part")
+	head.Shape = Enum.PartType.Ball
+	head.Size = Vector3.new(radius * 2, radius * 2, radius * 2)
+	head.Material = Enum.Material.Neon
+	head.Color = Color3.fromRGB(0, 150, 255)
+	head.CFrame = CFrame.new(cx, cy, 0)
+	head.Anchored = true
+	head.CanCollide = false
+	head.CanQuery = false
+	head.CanTouch = false
+	head.Parent = logoWorld
+
+	local tail = Instance.new("Part")
+	tail.Size = Vector3.new(radius * 1.7, length, radius * 1.7)
+	tail.Material = Enum.Material.Neon
+	tail.Color = Color3.fromRGB(0, 150, 255)
+	tail.Anchored = true
+	tail.CanCollide = false
+	tail.CanQuery = false
+	tail.CanTouch = false
+	local mesh = Instance.new("SpecialMesh")
+	mesh.MeshId = "rbxassetid://3270017"
+	mesh.Parent = tail
+	tail.CFrame = CFrame.new(cx, cy - radius - length / 2, 0) * CFrame.Angles(math.pi, 0, 0)
+	tail.Parent = logoWorld
+end
+
+addDrop(-22, 0, 5.5, 15)
+addDrop(0, 1, 7, 21)
+addDrop(22, 0, 5.5, 15)
+
+logoCam.CFrame = CFrame.lookAt(Vector3.new(0, -10, 38), Vector3.new(0, -10, 0))
 
 local dragging = false
 local dragStart = Vector2.zero
