@@ -188,3 +188,5 @@ UIS.InputBegan:Connect(function(input)
 		setOpen(not open)
 	end
 end)
+
+print("WildClient v2")
