@@ -3,7 +3,8 @@ local UIS = game:GetService("UserInputService")
 
 local Background = Color3.fromRGB(10, 11, 17)
 local Secondary = Color3.fromRGB(15, 17, 25)
-local Text = Color3.fromRGB(235, 240, 250)
+
+local LOGO_ID = "ВСТАВЬ_ID_ЛОГОТИПА"
 
 local gui = Instance.new("ScreenGui")
 gui.Name = "WildClient"
@@ -75,17 +76,14 @@ cover.BorderSizePixel = 0
 cover.ZIndex = 3
 cover.Parent = titlebar
 
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, -24, 1, 0)
-title.Position = UDim2.new(0, 16, 0, 0)
-title.BackgroundTransparency = 1
-title.Text = "Wild Client"
-title.TextColor3 = Text
-title.TextSize = 15
-title.Font = Enum.Font.GothamBold
-title.TextXAlignment = Enum.TextXAlignment.Left
-title.ZIndex = 5
-title.Parent = titlebar
+local logo = Instance.new("ImageLabel")
+logo.Size = UDim2.fromOffset(26, 26)
+logo.Position = UDim2.new(0, 12, 0.5, -13)
+logo.BackgroundTransparency = 1
+logo.Image = "rbxassetid://" .. LOGO_ID
+logo.ScaleType = Enum.ScaleType.Fit
+logo.ZIndex = 5
+logo.Parent = titlebar
 
 local dragging = false
 local dragStart = Vector2.zero
@@ -147,7 +145,7 @@ overlay.MouseButton1Click:Connect(function()
 end)
 
 UIS.InputBegan:Connect(function(input)
-	if input.KeyCode == Enum.KeyCode.RightShift then
+	if input.KeyCode == Enum.KeyCode.Insert then
 		setOpen(not open)
 	end
 end)
