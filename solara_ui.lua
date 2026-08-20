@@ -205,6 +205,9 @@ function Library:CreateWindow(options)
 	}
 
 	local function addTab(name)
+		if type(name) == "table" then
+			name = name.Name or name.name or "Вкладка"
+		end
 		local button = Instance.new("TextButton")
 		button.Size = UDim2.new(0, math.clamp(#name * 9 + 26, 80, 200), 0, 26)
 		button.BackgroundColor3 = Theme.Card
@@ -505,10 +508,10 @@ function Library:CreateWindow(options)
 			overlay.Visible = true
 			tween(blur, { Size = 8 }, 0.2)
 			tween(overlay, { BackgroundTransparency = 0.65 }, 0.2)
-			window.Scale = Vector2.new(0.94, 0.94)
+			window.Size = UDim2.fromOffset(width * 0.94, height * 0.94)
 			window.BackgroundTransparency = 0.4
 			task.delay(0.05, function()
-				tween(window, { Scale = Vector2.new(1, 1), BackgroundTransparency = 0 }, 0.3)
+				tween(window, { Size = UDim2.fromOffset(width, height), BackgroundTransparency = 0 }, 0.3)
 			end)
 		else
 			overlay.Visible = false
