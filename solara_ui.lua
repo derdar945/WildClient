@@ -79,7 +79,6 @@ viewport.Size = UDim2.fromOffset(34, 34)
 viewport.Position = UDim2.new(0, 12, 0.5, -17)
 viewport.BackgroundTransparency = 1
 viewport.ZIndex = 5
-viewport.FieldOfView = 75
 viewport.Ambient = Color3.new(1, 1, 1)
 viewport.LightColor = Color3.fromRGB(0, 150, 255)
 viewport.Parent = titlebar
